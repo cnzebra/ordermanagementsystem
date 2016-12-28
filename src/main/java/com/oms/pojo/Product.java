@@ -1,21 +1,21 @@
 package com.oms.pojo;
 
+import org.springframework.data.annotation.Id;
+
 public class Product {
-	private String id;
+	
+	
 	
 	private String name;
 	private int quantity;
-	private double price;
+	private String price;
 	private String description;
 	private String imagename;
+	//private String product_name;
 	
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	
+	
 	public String getName() {
 		return name;
 	}
@@ -28,10 +28,10 @@ public class Product {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public double getPrice() {
+	public String getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 	public String getDescription() {
@@ -45,6 +45,14 @@ public class Product {
 	}
 	public void setImagename(String imagename) {
 		this.imagename = imagename;
+	}
+	public String getProduct() {
+		return name;
+	}
+	public void setProduct(String name) {
+	
+		this.name = name;
+		System.out.print("product name....."+name);
 	}
 	
 
