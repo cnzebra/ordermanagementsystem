@@ -37,7 +37,7 @@ table tr:nth-child(even) {
 <div data-ng-app="myApp" data-ng-controller="productController">
 
 <div style="text-align:right">
-<h3><p style="font-family:Apple Chancery;font-size:30px"><b>Welcome<b></b></p> </h3>
+<h3><p style="font-family:Apple Chancery;font-size:30px"><b>Welcome<b></b></p>{{user.email}}  </h3>
 <a href="/index.html"></a>
 </div>
 
@@ -55,15 +55,15 @@ table tr:nth-child(even) {
 
 </tr>
 <tr data-ng-repeat="product in names">
-  <td><input type="checkbox" value="" ng-model=""></td>
+  <td><input type="checkbox" value="" ng-model="product.isSelected"></td>
   <td>
   	<div>
     <img src="images/{{product.imagename}}"  width="120" height="130" style="vertical-align: middle;"/>
     
     </div>
-     <td>{{product.name}}</td>  
+    
   </td>
-  
+   <td>{{product.name}}</td>  
   
   <td> 
      {{product.price}}
@@ -78,15 +78,15 @@ table tr:nth-child(even) {
 </center>
 </br></br>
 
-<div align="right">
-<button class="button" data-ng-click="">ADD TO CART</button>
+<div align="center">
+<button class="button" ng-click="proceedOrder()">Proceed To Order</button>
 </div>
   </center>
  
 <script>
 var app = angular.module('myApp', []);
 app.controller('productController',function($scope, $http) {
-	$scope.selectedItems = [];
+	$scope.selectedProduct = [];
 	
 	$http.get("http://localhost:8080/product/fetch")
   	.success(function(response) {
@@ -99,27 +99,32 @@ app.controller('productController',function($scope, $http) {
   
     
 	
+	$http.get("http://localhost:8080/product/getUser")
+	  .success(function(response) {
+		 
+		  $scope.user = response;
+		  sessionStorage.setProduct("loginmaild", $scope.user.email);
+		  
+	  });
 	
-	
-	$scope.redirect = function(){
+	$scope.proceedOrder = function(){
 		
+		
+	
 	angular.forEach($scope.names, function(name) {
 		
 		if(name.isSelected) {
 			
-			$scope.selectedItems.push(name);
-		
-			
+			$scope.selectedProduct.push(name);
+		     
+			//alert($scope.selectedProduct)
 		}
 	});
-
-	//sessionStorage.setItem("SelectedItems", JSON.stringify($scope.selectedItems));
-	//sessionStorage.setItem("quantity", JSON.stringify($scope.quantity));
+      //alert(JSON.stringify($scope.selectedProduct))
+	sessionStorage.setItem("SelectedProduct", JSON.stringify($scope.selectedProduct));
 	
 	
-	
-	// $location.url('example.html');
-	 window.location = "order.html";
+	 window.location = "confirmOrder.html";
 }
 
 });
