@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.oms.pojo.Product;
+import com.oms.pojo.User;
+import com.oms.services.GoogleSignInServiceImpl;
 import com.oms.services.ProductService;
 
 @RestController
@@ -25,6 +26,13 @@ public class ProductController {
 	@Autowired
 	
 	ProductService prodService;
+
+	@Autowired
+	GoogleSignInServiceImpl signInService;
+
+	@Autowired
+	User user;
+	
 	
 	@RequestMapping(value = "/fetch", method = RequestMethod.GET)
 	@ResponseBody
@@ -33,6 +41,18 @@ public class ProductController {
 		List<Product> prod=prodService.fetchProd();
 		return prod;
 	}
+	@RequestMapping(value="/insert", method = RequestMethod.POST)
+	public void insertProduct(@RequestBody Product product){
+		
+		prodService.createProd(product);
+		
+		
+	}
 	
+	@GetMapping()
+	@RequestMapping("/getUser")
+	public User getUser() {
+		return signInService.user;
+	}
 	
 }
