@@ -2,6 +2,8 @@ package com.oms.controllers;
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oms.mail.SmtpMailSender;
 import com.oms.pojo.ConfirmOrder;
 import com.oms.services.ConfirmOrderService;
 
@@ -21,10 +24,15 @@ public class ConfirmOrderController {
 
 	@Autowired
 	ConfirmOrderService orderService;
+	@Autowired
+	SmtpMailSender mailSender;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<ConfirmOrder> createItem(@RequestBody ConfirmOrder order) {
+	public ResponseEntity<ConfirmOrder> createItem(@RequestBody ConfirmOrder order) throws MessagingException {
 		orderService.createOrder(order);
+		
+		 mailSender.send(order.getEmail(), "Item Confirmation", "your order is confirmed with orderId=   "+order.getId()
+		 +"    orderDate is    "+order.getOrder_date()+"    deliverydate is   "+order.getDelivery_date()+ "   delivaryAddress   "+order.getDelivery_address());
 
 		return new ResponseEntity<ConfirmOrder>(order, HttpStatus.OK);
 	}

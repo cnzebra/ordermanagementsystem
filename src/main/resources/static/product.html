@@ -103,7 +103,7 @@ app.controller('productController',function($scope, $http) {
 	  .success(function(response) {
 		 
 		  $scope.user = response;
-		  sessionStorage.setProduct("loginmaild", $scope.user.email);
+		  sessionStorage.setItem("loginmaild", $scope.user.email);
 		  
 	  });
 	

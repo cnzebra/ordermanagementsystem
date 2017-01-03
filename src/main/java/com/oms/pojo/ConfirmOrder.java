@@ -10,6 +10,7 @@ public class ConfirmOrder {
 
 	@Id
 	private String id;
+	private String name;
 
 	private Date delivery_date;
 
