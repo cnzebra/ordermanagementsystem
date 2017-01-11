@@ -10,19 +10,12 @@ public class ConfirmOrder {
 
 	@Id
 	private String id;
-	private String name;
-
 	private Date delivery_date;
-
 	private String total_price;
-	
 	private String delivery_address;
 	private String email;
-	private Date  order_date;
+	private Date order_date;
 	private String quantity;
-	
-	
-	
 
 	public String getId() {
 		return id;
@@ -40,8 +33,6 @@ public class ConfirmOrder {
 		this.delivery_date = delivery_date;
 	}
 
-	
-
 	public String getDelivery_address() {
 		return delivery_address;
 	}
@@ -57,6 +48,7 @@ public class ConfirmOrder {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public String getTotal_price() {
 		return total_price;
 	}
@@ -80,6 +72,5 @@ public class ConfirmOrder {
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
-
 
 }

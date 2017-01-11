@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<style>
+body {
+	
+}
+
+.button {
+	background-color: blue;
+	border: 1px;
+	color: WHITE;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+}
+
+table, th, td {
+	border: 1px solid grey;
+	border-collapse: collapse;
+	padding: 5px;
+}
+
+table tr:nth-child(odd) {
+	background-color: #f1f1f1;
+}
+
+table tr:nth-child(even) {
+	background-color: #ffffff;
+}
+
+input {
+	width: 70px;
+	vertical-align: middle;
+}
+
+select {
+	text-indent: 5px;
+	text-align: center;
+}
+
+.ng-hide {
+	transition: 3s;
+	background-color: green
+}
+
+h3 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div ng-app="myApp" ng-controller="itemController">
+		<h3 style="color: green; text-align: center">MANAGE ITEMS</h3>
+		<br>
+		<table align="center" style="border-color: #efeded">
+			<tr>
+				<th><a href=""
+					ng-click="orderByField='itemId'; reverseSort = !reverseSort">ITEMID</a>
+				</th>
+				<th><a href=""
+					ng-click="orderByField='itemName'; reverseSort = !reverseSort">ITEMNAME</a>
+				</th>
+				<th><a href=""
+					ng-click="orderByField='quantity'; reverseSort = !reverseSort">QUANTITY</a>
+				</th>
+				<th><a href=""
+					ng-click="orderByField='price'; reverseSort = !reverseSort">PRICE</a>
+				</th>
+				<th><a href=""
+					ng-click="orderByField='createdDate'; reverseSort = !reverseSort">CREATEDDATE</a>
+				</th>
+				<th><a href="">ACTION</a></th>
+			</tr>
+			<tr
+				ng-repeat="item in items | filter: searchKeyword | orderBy:orderByField:reverseSort"">
+				<td>
+					<div ng-hide="editingItem[item.itemId]">{{item.itemId}}</div>
+					<div ng-show="editingItem[item.itemId]">
+						<input type="text" ng-model="item.itemId" />
+					</div>
+				</td>
+				<td>
+					<div ng-hide="editingItem[item.itemId]">{{item.itemName |
+						uppercase}}</div>
+					<div ng-show="editingItem[item.itemId]">
+						<input type="text" ng-model="item.itemName" />
+					</div>
+				</td>
+				<td>
+					<div ng-hide="editingItem[item.itemId]">{{item.quantity}}</div>
+					<div ng-show="editingItem[item.itemId]">
+						<input type="text" ng-model="item.quantity" />
+					</div>
+				</td>
+				<td>
+					<div ng-hide="editingItem[item.itemId]">{{item.price}}</div>
+					<div ng-show="editingItem[item.itemId]">
+						<input type="text" ng-model="item.price" />
+					</div>
+				</td>
+				<td>
+					<div ng-hide="editingItem[item.createdDate]">{{item.createdDate
+						| date }}</div>
+					<div ng-show="editingItem[item.createdDate]">
+						<input type="text" ng-model="item.createdDate" />
+					</div>
+				</td>
+				<td>
+					<button ng-hide="editingItem[item.itemId]" class="btn btn-info"
+						ng-click="modify(item)">Modify</button>
+					<button ng-show="editingItem[item.itemId]" class="btn btn-success"
+						ng-click="update(item.itemId,item)">Update</button>
+					<button value="delete" class="btn btn-danger"
+						ng-click="deleteItem(item.itemId,$index)">Delete</button>
+				</td>
+			</tr>
+		</table>
+		<br> <br>
+		<button type="button" class="btn btn-primary center-block"
+			ng-click="addItem()">Add New Item</button>
+	</div>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"> </script>
+	<script>
+		var app = angular.module("myApp", ['ngAnimate']);
+		app.controller('itemController', function($scope, $http,$window) {
+			$scope.items = {};
+			$scope.selectedItems = [];
+			$http.get("http://localhost:8080/item/itemList").then(
+					function(response) {
+						$scope.items = response.data;
+					});
+			$scope.addItem = function() {
+				window.location = "addNewItem.html";
+			};
+			
+			$scope.deleteItem = function(itemId, index){
+				$http.delete('http://localhost:8080/item/delete/' + itemId)
+				.success(function(response){
+					$scope.items.splice(index,1); 
+				}).error(function(response){
+					$scope.error_message = response.error_message; 
+					});
+				};
+			
+			$scope.editingItem = {};
+			    
+			    for (var i = 0, length = $scope.items.length; i < length; i++) {
+			      $scope.editingItem[$scope.items[i].itemId] = false;
+			    }
+
+			$scope.modify = function(item){
+			    $scope.editingItem[item.itemId] = true;
+				};
+			  
+			$scope.update = function(itemId,item){
+		    	$http.put('http://localhost:8080/item/update/' + parseInt(itemId), item)
+				.success(function(response){
+					$window.location.href='/item.html';
+				}).error(function(response){
+					$scope.error_message = response.error_message; 
+					});
+			    };	
+		});
+	</script>
+
+</body>

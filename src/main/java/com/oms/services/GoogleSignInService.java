@@ -1,10 +1,5 @@
 package com.oms.services;
-import org.json.JSONObject;
-
-
 import com.oms.pojo.User;
-
-
 
 public interface GoogleSignInService {
 	

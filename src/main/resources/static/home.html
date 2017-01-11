@@ -1,0 +1,136 @@
+<html>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<link
+	href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
+	rel="stylesheet" type="text/css" />
+
+<style>
+.well {
+	color: #973B7D;
+}
+
+table#button {
+	text-align: center;
+}
+</style>
+<body>
+	<div data-ng-app="homeApp" data-ng-controller="homeController">
+		<div style="text-align: right">
+			<h3></h3>
+			<a href="/index.html"></a>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<h1 class="well">
+					<a href="index.htm"> <img src="images/cart_icon.png"
+						height="100" width="100" alt="logo" />
+					</a> Online Order Management
+				</h1>
+				<div ng-view></div>
+			</div>
+		</div>
+		<table class="table table-hover table-bordered" style="width: 800px"
+			align="center">
+			<tr class="well">
+				<th>Order Id</th>
+				<th>Amount</th>
+				<th><b>Status</b></th>
+			</tr>
+			<tr ng-repeat="order in orders ">
+				<td ng-model="myShow"><a ng-href="#"
+					ng-click="getOrderId(order.orderId)">{{order.orderId}}</a></td>
+				<td>{{order.orderAmount}}</td>
+				<td>{{order.status}}
+			</tr>
+		</table>
+		<div ng-show="myShow">
+			<table class="table table-hover table-bordered" style="width: 800px"
+				align="center">
+				<tr class="well">
+					<th>ORDERID</th>
+					<th>ITEMID</th>
+					<th>ITEMNAME</th>
+					<th>QUANTITY</th>
+					<th>PRICE</th>
+					<th></th>
+				</tr>
+				<tr ng-repeat="items in itemDetails ">
+					<td>{{orderId}}</td>
+					<td>{{items.itemId}}</td>
+					<td>{{items.itemName}}</td>
+					<td>{{items.quantity}}</td>
+					<td>{{items.price}}</td>
+					<td><button class="btn btn-info"
+							ng-click="check(items.itemId,$index)">CHECK</button></td>
+				</tr>
+				<div id="button">
+					<tr>
+						<td colspan="3"><center>
+								<button class="btn btn-success"
+									ng-click="processedOrder(orderId)">Process to Order</button>
+							</center></td>
+						<td colspan="3"><center>
+								<button class="btn btn-danger" ng-click="rejectOrder(orderId)">Reject</button>
+							</center></td>
+					</tr>
+				</div>
+			</table>
+		</div>
+	</div>
+	<script>
+		var app = angular.module('homeApp', []);
+		app.controller('homeController',function($scope, $http) {
+			$scope.availableCheck = {};
+			$http.get("http://localhost:8080/order/fetch")
+			.then(function(response) {
+					$scope.orders = response.data;
+						});
+
+			$scope.getOrderId = function(id) {
+				$http.get("http://localhost:8080/order/getOrder/"+ id)
+					.then(function(response) {
+							$scope.myShow = "true";
+							$scope.enableId = 1;
+							$scope.orderDetails = response.data;
+							$scope.orderId = $scope.orderDetails.orderId;
+							$scope.itemDetails = $scope.orderDetails.item;
+								});
+							}
+			
+			$scope.rejectOrder = function(id) {
+				$http.put("http://localhost:8080/order/update/" + id)
+					.then(function(response) {
+							window.location = "home.html";
+								});
+							}
+
+			$scope.processedOrder = function(id) {
+				$http.put("http://localhost:8080/order/updateProcessOrder/" + id)
+				.then(function(response) {
+					window.location = "home.html";
+							});
+						}
+
+			$scope.check = function(id, index) {
+				$http.get("http://localhost:8080/item/get/"+ id)
+				.then(function(response) {
+					$scope.available = "";
+					$scope.availableCheck = response.data;
+					alert($scope.availableCheck.quantity);
+					alert($scope.orderDetails.item[index].quantity);
+							if ($scope.availableCheck.quantity > $scope.orderDetails.item[index].quantity) {
+									$scope.available = "true";
+									alert($scope.available);
+								} else {
+									$scope.available = "false";
+									alert($scope.available);
+								}
+
+						});
+					};
+
+	});
+	</script>
+</body>
+</html>
