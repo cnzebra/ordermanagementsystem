@@ -10,6 +10,14 @@
 	color: #973B7D;
 }
 
+h3 {
+	text-align: center;
+}
+
+h1 {
+	text-align: center;
+}
+
 table#button {
 	text-align: center;
 }
@@ -40,7 +48,7 @@ table#button {
 			<tr ng-repeat="order in orders ">
 				<td ng-model="myShow"><a ng-href="#"
 					ng-click="getOrderId(order.orderId)">{{order.orderId}}</a></td>
-				<td>{{order.orderAmount}}</td>
+				<td>{{order.orderAmount | currency:'&#8377;'}}</td>
 				<td>{{order.status}}
 			</tr>
 		</table>
@@ -60,19 +68,19 @@ table#button {
 					<td>{{items.itemId}}</td>
 					<td>{{items.itemName}}</td>
 					<td>{{items.quantity}}</td>
-					<td>{{items.price}}</td>
+					<td>{{items.price | currency:'&#8377;'}}</td>
 					<td><button class="btn btn-info"
 							ng-click="check(items.itemId,$index)">CHECK</button></td>
 				</tr>
 				<div id="button">
 					<tr>
-						<td colspan="3"><center>
+						<td colspan="3"><h3>
 								<button class="btn btn-success"
 									ng-click="processedOrder(orderId)">Process to Order</button>
-							</center></td>
-						<td colspan="3"><center>
+							</h3></td>
+						<td colspan="3"><h3>
 								<button class="btn btn-danger" ng-click="rejectOrder(orderId)">Reject</button>
-							</center></td>
+							</h3></td>
 					</tr>
 				</div>
 			</table>
@@ -80,57 +88,70 @@ table#button {
 	</div>
 	<script>
 		var app = angular.module('homeApp', []);
-		app.controller('homeController',function($scope, $http) {
-			$scope.availableCheck = {};
-			$http.get("http://localhost:8080/order/fetch")
-			.then(function(response) {
-					$scope.orders = response.data;
-						});
+		app
+				.controller(
+						'homeController',
+						function($scope, $http) {
+							$scope.availableCheck = {};
+							$http.get("http://localhost:8080/order/fetch")
+									.then(function(response) {
+										$scope.orders = response.data;
+									});
 
-			$scope.getOrderId = function(id) {
-				$http.get("http://localhost:8080/order/getOrder/"+ id)
-					.then(function(response) {
-							$scope.myShow = "true";
-							$scope.enableId = 1;
-							$scope.orderDetails = response.data;
-							$scope.orderId = $scope.orderDetails.orderId;
-							$scope.itemDetails = $scope.orderDetails.item;
+							$scope.getOrderId = function(id) {
+								$http
+										.get(
+												"http://localhost:8080/order/getOrder/"
+														+ id)
+										.then(
+												function(response) {
+													$scope.myShow = "true";
+													$scope.enableId = 1;
+													$scope.orderDetails = response.data;
+													$scope.orderId = $scope.orderDetails.orderId;
+													$scope.itemDetails = $scope.orderDetails.item;
+												});
+							}
+
+							$scope.rejectOrder = function(id) {
+								$http.put(
+										"http://localhost:8080/order/update/"
+												+ id).then(function(response) {
+									window.location = "home.html";
 								});
 							}
-			
-			$scope.rejectOrder = function(id) {
-				$http.put("http://localhost:8080/order/update/" + id)
-					.then(function(response) {
-							window.location = "home.html";
+
+							$scope.processedOrder = function(id) {
+								$http.put(
+										"http://localhost:8080/order/updateProcessOrder/"
+												+ id).then(function(response) {
+									window.location = "home.html";
 								});
 							}
 
-			$scope.processedOrder = function(id) {
-				$http.put("http://localhost:8080/order/updateProcessOrder/" + id)
-				.then(function(response) {
-					window.location = "home.html";
-							});
-						}
+							$scope.check = function(id, index) {
+								$http
+										.get(
+												"http://localhost:8080/item/get/"
+														+ id)
+										.then(
+												function(response) {
+													$scope.available = "";
+													$scope.availableCheck = response.data;
+													//alert($scope.availableCheck.quantity);
+													//alert($scope.orderDetails.item[index].quantity);
+													if ($scope.availableCheck.quantity > $scope.orderDetails.item[index].quantity) {
+														$scope.available = "Available in Inventory";
+														alert($scope.available);
+													} else {
+														$scope.available = "Out of Stock";
+														alert($scope.available);
+													}
 
-			$scope.check = function(id, index) {
-				$http.get("http://localhost:8080/item/get/"+ id)
-				.then(function(response) {
-					$scope.available = "";
-					$scope.availableCheck = response.data;
-					alert($scope.availableCheck.quantity);
-					alert($scope.orderDetails.item[index].quantity);
-							if ($scope.availableCheck.quantity > $scope.orderDetails.item[index].quantity) {
-									$scope.available = "true";
-									alert($scope.available);
-								} else {
-									$scope.available = "false";
-									alert($scope.available);
-								}
+												});
+							};
 
 						});
-					};
-
-	});
 	</script>
 </body>
 </html>

@@ -101,7 +101,7 @@ h3 {
 					</div>
 				</td>
 				<td>
-					<div ng-hide="editingItem[item.itemId]">{{item.price}}</div>
+					<div ng-hide="editingItem[item.itemId]">{{item.price | currency:'&#8377;'}}</div>
 					<div ng-show="editingItem[item.itemId]">
 						<input type="text" ng-model="item.price" />
 					</div>

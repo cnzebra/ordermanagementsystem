@@ -1,0 +1,126 @@
+<html lang="en" ng-app="myApp">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add New item</title>
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<style>
+input {
+	font-family: Gill Sans, Verdana;
+	font-size: 11px;
+}
+span {
+	font-family: Gill Sans, Verdana;
+	font-size: 11px;
+	color:#fdd3ce;
+}
+</style>
+<script	src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
+<script type="text/javascript">
+angular.module('itemervice',[]).factory('itemFactory',function($http,$window){
+	return{
+		createItem: function(item){
+			$http.post('/item/create', item)
+			.then(function(data){
+				$window.location.href='/item.html';
+			})
+			.catch(function(data){
+				alert("not Created")
+			});
+		},
+	}
+});
+var app = angular.module("myApp", [ 'itemervice']);
+app.controller('myCtrl',function($scope, $http, itemFactory) {
+	
+					//for validating the form before submitting
+					$scope.onlyNumbers = /^[1-9]+[0-9]*$/;
+					$scope.submitForm = function(isValid,item) {
+				    if (isValid) {
+					  itemFactory.createItem(item);
+				      alert('Item has been created Successfully');
+				      $scope.reset();
+				     
+				    }
+					};
+					
+					$scope.reset = function() {
+					      $scope.item = {};
+					      $scope.itemForm.$setPristine();
+					    }
+					
+				});
+ </script>
+</head>
+<body>
+	<div ng-controller="myCtrl">
+		<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add
+			New Item</h3>
+		<form class="form-horizontal" role="form" name="itemForm" ng-submit="submitForm(itemForm.$valid,item)" novalidate  >
+			<div class="form-group">
+				<label for="itemId" class="col-sm-2 control-label">ItemId</label>
+				<div class="col-sm-4">
+					<input class="form-control"  name="itemId" placeholder="Item Id"
+						ng-pattern="onlyNumbers" ng-model="item.itemId"  type="number"  required>
+						<span ng-show="(itemForm.itemId.$dirty || !itemForm.itemId.length || isValid) && itemForm.itemId.$error.required" >
+     						 Item ID is required
+    					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="itemName" class="col-sm-2 control-label">Item
+					Name</label>
+				<div class="col-sm-4">
+					<input class="form-control" placeholder="Item Name" name="itemName"
+						ng-model="item.itemName" required>
+						<span ng-show="(itemForm.itemName.$dirty || !itemForm.itemName.length || isValid) && itemForm.itemName.$error.required">
+     						 Item Name is required
+    					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="quantity" class="col-sm-2 control-label">Quantity</label>
+				<div class="col-sm-4">
+					<input class="form-control" placeholder="Quantity" name="quantity"
+						ng-model="item.quantity"  type="number" required>
+						<span ng-show="(itemForm.quantity.$dirty || !itemForm.quantity.length || isValid) && itemForm.quantity.$error.required">
+     						 Quantity  is required
+    					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="price" class="col-sm-2 control-label">Price</label>
+				<div class="col-sm-4">
+					<input class="form-control" placeholder="Price" name="price"
+						ng-model="item.price"  type="number" required>
+						<span ng-show="(itemForm.price.$dirty || !itemForm.price.length || isValid) && itemForm.price.$error.required">
+     						 Price  is required
+    					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="createdDate" class="col-sm-2 control-label">Created Date</label>
+				<div class="col-sm-4">
+					<input class="form-control" placeholder="Created Date" name="createdDate"
+						ng-model="item.createdDate"  type="date" required>
+						<span ng-show="(itemForm.createdDate.$dirty || !itemForm.createdDate.length || isValid) && itemForm.createdDate.$error.required">
+     						 Created Date  is required
+    					</span>
+				</div>
+			</div>
+			<div class="controls">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button class="btn btn-success" type="submit">Add</button>
+
+			</div>
+		</form>
+	</div>
+</body>
+</html>
