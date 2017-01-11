@@ -1,6 +1,7 @@
 <html>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"> </script>
 <link
 	href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
 	rel="stylesheet" type="text/css" />
@@ -21,6 +22,12 @@ h1 {
 table#button {
 	text-align: center;
 }
+.selected {
+    background-color:lightgreen;
+    color:white;
+    font-weight:bold;
+}
+
 </style>
 <body>
 	<div data-ng-app="homeApp" data-ng-controller="homeController">
@@ -45,7 +52,7 @@ table#button {
 				<th>Amount</th>
 				<th><b>Status</b></th>
 			</tr>
-			<tr ng-repeat="order in orders ">
+			<tr  ng-repeat="order in orders " ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
 				<td ng-model="myShow"><a ng-href="#"
 					ng-click="getOrderId(order.orderId)">{{order.orderId}}</a></td>
 				<td>{{order.orderAmount | currency:'&#8377;'}}</td>
@@ -87,7 +94,7 @@ table#button {
 		</div>
 	</div>
 	<script>
-		var app = angular.module('homeApp', []);
+		var app = angular.module('homeApp', ['ngAnimate']);
 		app
 				.controller(
 						'homeController',
@@ -150,6 +157,12 @@ table#button {
 
 												});
 							};
+							//for animate purpose
+							 $scope.selectedRow = null;  
+							  $scope.setClickedRow = function(index){  
+							     $scope.selectedRow = index;
+							  }
+							//end animate purpose
 
 						});
 	</script>
