@@ -11,21 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.oms.mail.SmtpMailSender;
 import com.oms.pojo.Order;
 import com.oms.pojo.User;
 import com.oms.services.GoogleSignInServiceImpl;
 import com.oms.services.OrderService;
 
-@RestController
-@RequestMapping(value = "/order")
-public class OrderController {
+
+public class OrderControllerTest {
 
 	@Autowired
 	OrderService orderService;
-	
-	@Autowired
-	SmtpMailSender mailSender;
 
 	@Autowired
 	GoogleSignInServiceImpl signInService;
@@ -64,13 +59,6 @@ public class OrderController {
 		Order order = orderService.fetchOrderById(orderId);
 		order.setStatus("processed");
 		orderService.createOrder(order);
-		try {
-			mailSender.send("msambaiah@nisum.com", "ItemConfirmation",
-					"Thank You for Placing order,you Order details are as follows" + "orderId= " + order.getOrderId()
-							+ " " + "orderAmount=" + order.getOrderAmount());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@GetMapping()

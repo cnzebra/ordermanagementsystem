@@ -80,4 +80,16 @@ public class ItemController {
 		return new ResponseEntity<Item>(item, HttpStatus.FOUND);
 	}
 
+	@RequestMapping(value = "/isModify/{id}/{quantity}", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<Item> itemsModifications(@PathVariable("id") Integer id,
+			@PathVariable("quantity") Integer quantity) {
+		Item item = itemService.findItemById(id);
+		Integer invenQuantity = item.getQuantity();
+		Integer modifiedQuantity = invenQuantity - quantity;
+		item.setQuantity(modifiedQuantity);
+		itemService.itemModification(item);
+		return new ResponseEntity<Item>(HttpStatus.OK);
+	}
+
 }

@@ -44,4 +44,9 @@ public class ItemServiceImpl implements ItemService {
 	public boolean isItemExist(Integer itemId) {
 		return findItemById(itemId) != null;
 	}
+
+	@Override
+	public void itemModification(Item item) {
+		itemRepository.save(item);
+	}
 }

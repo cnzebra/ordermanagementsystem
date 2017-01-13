@@ -4,6 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.oms.pojo.Item;
 
-public interface ItemRepository extends MongoRepository<Item, Integer> {
+public interface ItemRepository extends MongoRepository<Item, Integer>{
 
 }

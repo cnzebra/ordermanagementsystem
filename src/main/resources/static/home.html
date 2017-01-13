@@ -1,7 +1,10 @@
 <html>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"> </script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js">
+	
+</script>
 <link
 	href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
 	rel="stylesheet" type="text/css" />
@@ -22,12 +25,12 @@ h1 {
 table#button {
 	text-align: center;
 }
-.selected {
-    background-color:lightgreen;
-    color:white;
-    font-weight:bold;
-}
 
+.selected {
+	background-color: lightgreen;
+	color: white;
+	font-weight: bold;
+}
 </style>
 <body>
 	<div data-ng-app="homeApp" data-ng-controller="homeController">
@@ -52,7 +55,9 @@ table#button {
 				<th>Amount</th>
 				<th><b>Status</b></th>
 			</tr>
-			<tr  ng-repeat="order in orders " ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
+			<tr ng-repeat="order in orders "
+				ng-class="{'selected':$index == selectedRow}"
+				ng-click="setClickedRow($index)">
 				<td ng-model="myShow"><a ng-href="#"
 					ng-click="getOrderId(order.orderId)">{{order.orderId}}</a></td>
 				<td>{{order.orderAmount | currency:'&#8377;'}}</td>
@@ -63,7 +68,6 @@ table#button {
 			<table class="table table-hover table-bordered" style="width: 800px"
 				align="center">
 				<tr class="well">
-					<th>ORDERID</th>
 					<th>ITEMID</th>
 					<th>ITEMNAME</th>
 					<th>QUANTITY</th>
@@ -71,7 +75,6 @@ table#button {
 					<th></th>
 				</tr>
 				<tr ng-repeat="items in itemDetails ">
-					<td>{{orderId}}</td>
 					<td>{{items.itemId}}</td>
 					<td>{{items.itemName}}</td>
 					<td>{{items.quantity}}</td>
@@ -94,7 +97,7 @@ table#button {
 		</div>
 	</div>
 	<script>
-		var app = angular.module('homeApp', ['ngAnimate']);
+		var app = angular.module('homeApp', [ 'ngAnimate' ]);
 		app
 				.controller(
 						'homeController',
@@ -145,10 +148,26 @@ table#button {
 												function(response) {
 													$scope.available = "";
 													$scope.availableCheck = response.data;
-													//alert($scope.availableCheck.quantity);
-													//alert($scope.orderDetails.item[index].quantity);
-													if ($scope.availableCheck.quantity > $scope.orderDetails.item[index].quantity) {
+													var orderItemId = $scope.orderDetails.item[index].itemId;
+													var orderItemQuantity = $scope.orderDetails.item[index].quantity;
+													if ($scope.availableCheck.quantity >= $scope.orderDetails.item[index].quantity) {
 														$scope.available = "Available in Inventory";
+														$http
+																.put(
+																		'http://localhost:8080/item/isModify/'
+																				+ orderItemId
+																				+ '/'
+																				+ orderItemQuantity)
+																.success(
+																		function(
+																				response) {
+																			//alert("deleted");
+																		})
+																.error(
+																		function(
+																				response) {
+																			$scope.error_message = response.error_message;
+																		});
 														alert($scope.available);
 													} else {
 														$scope.available = "Out of Stock";
@@ -158,10 +177,10 @@ table#button {
 												});
 							};
 							//for animate purpose
-							 $scope.selectedRow = null;  
-							  $scope.setClickedRow = function(index){  
-							     $scope.selectedRow = index;
-							  }
+							$scope.selectedRow = null;
+							$scope.setClickedRow = function(index) {
+								$scope.selectedRow = index;
+							}
 							//end animate purpose
 
 						});

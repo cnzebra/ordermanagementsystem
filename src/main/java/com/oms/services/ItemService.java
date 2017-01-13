@@ -11,6 +11,8 @@ public interface ItemService {
 	void saveItem(Item item);
 
 	void updateItem(Item item);
+	
+	void itemModification(Item item);
 
 	void deleteItemById(Integer itemId);
 
