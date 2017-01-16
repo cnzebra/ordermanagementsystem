@@ -55,7 +55,7 @@ table#button {
 				<th>Amount</th>
 				<th><b>Status</b></th>
 			</tr>
-			<tr ng-repeat="order in orders "
+			<tr ng-repeat="order in orders"
 				ng-class="{'selected':$index == selectedRow}"
 				ng-click="setClickedRow($index)">
 				<td ng-model="myShow"><a ng-href="#"
@@ -65,22 +65,25 @@ table#button {
 			</tr>
 		</table>
 		<div ng-show="myShow">
-			<table class="table table-hover table-bordered" style="width: 800px"
+			<table  class="table table-hover table-bordered" style="width: 800px"
 				align="center">
 				<tr class="well">
 					<th>ITEMID</th>
 					<th>ITEMNAME</th>
 					<th>QUANTITY</th>
 					<th>PRICE</th>
-					<th></th>
+					<th colspan="2"></th>
+					
 				</tr>
-				<tr ng-repeat="items in itemDetails ">
+				<tr ng-repeat="items in itemDetails">
 					<td>{{items.itemId}}</td>
 					<td>{{items.itemName}}</td>
 					<td>{{items.quantity}}</td>
 					<td>{{items.price | currency:'&#8377;'}}</td>
-					<td><button class="btn btn-info"
-							ng-click="check(items.itemId,$index)">CHECK</button></td>
+					<td  ><button class="btn btn-info"
+							ng-click="check(items.itemId,$index)" >CHECK</button> 
+							<h9  ng-show="available">{{items.availMessage}}</h9>
+					</td>
 				</tr>
 				<div id="button">
 					<tr>
@@ -151,7 +154,8 @@ table#button {
 													var orderItemId = $scope.orderDetails.item[index].itemId;
 													var orderItemQuantity = $scope.orderDetails.item[index].quantity;
 													if ($scope.availableCheck.quantity >= $scope.orderDetails.item[index].quantity) {
-														$scope.available = "Available in Inventory";
+														$scope.available = "true";
+														$scope.orderDetails.item[index].availMessage="items are availbale";
 														$http
 																.put(
 																		'http://localhost:8080/item/isModify/'
@@ -161,21 +165,20 @@ table#button {
 																.success(
 																		function(
 																				response) {
-																			//alert("deleted");
 																		})
 																.error(
 																		function(
 																				response) {
 																			$scope.error_message = response.error_message;
 																		});
-														alert($scope.available);
 													} else {
-														$scope.available = "Out of Stock";
-														alert($scope.available);
+														$scope.available = "false";
+														$scope.orderDetails.item[index].availMessage="out of stock";
 													}
 
 												});
 							};
+							
 							//for animate purpose
 							$scope.selectedRow = null;
 							$scope.setClickedRow = function(index) {
