@@ -14,8 +14,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	OrderRepository orderRepository;
-	@Autowired
-	ItemRepository itemRepository;
+
 
 	@Override
 	public List<Order> fetchOrders() {

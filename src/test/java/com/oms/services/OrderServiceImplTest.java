@@ -1,6 +1,9 @@
 package com.oms.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -60,6 +63,40 @@ public class OrderServiceImplTest {
 		when(orderRepository.findOne(ORDERID)).thenReturn(order);
 		Order expectedorder = orderService.fetchOrderById(ORDERID);
 		assertEquals(expectedorder, order);
+	}
+
+	@Test
+	public void createOrderTest() {
+
+		when(orderRepository.save(order)).thenReturn(order);
+		orderService.createOrder(order);
+		verify(orderRepository, times(1)).save(order);
+
+	}
+
+	@Test
+	public void deleteOrderTest() {
+		doNothing().when(orderRepository).delete(ORDERID);
+		orderService.deleteOrder(ORDERID);
+		verify(orderRepository, times(1)).delete(ORDERID);
+	}
+
+	@Test
+	public void updateStatusRejectTest() {
+
+		when(orderRepository.findOne(ORDERID)).thenReturn(order);
+
+		orderService.updateStatusReject(ORDERID);
+		verify(orderRepository, times(1)).findOne(ORDERID);
+
+	}
+
+	@Test
+	public void updateProcessedorderTest() {
+		when(orderRepository.findOne(ORDERID)).thenReturn(order);
+		orderService.updateProcessedorder(ORDERID);
+		verify(orderRepository, times(1)).findOne(ORDERID);
+
 	}
 
 }

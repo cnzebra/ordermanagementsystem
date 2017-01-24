@@ -18,6 +18,7 @@ public class GoogleSignInController {
 	private GoogleSignInService signService;
 
 	User user = null;
+	
 
 	@GetMapping()
 	public String welcomePage() {
