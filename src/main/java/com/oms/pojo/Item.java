@@ -12,6 +12,15 @@ public class Item {
 	private Integer quantity;
 	private Integer price;
 	private Date createdDate;
+	private String availMessage;
+	
+	public String getAvailMessage() {
+		return availMessage;
+	}
+
+	public void setAvailMessage(String availMessage) {
+		this.availMessage = availMessage;
+	}
 
 	public Integer getItemId() {
 		return itemId;
