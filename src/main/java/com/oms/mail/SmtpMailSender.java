@@ -15,7 +15,7 @@ public class SmtpMailSender {
 	private JavaMailSender javaMailSender;
 
 	public void send(String to, String subject, String body) throws MessagingException {
-		System.out.println("checking mail send is calling");
+		
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true); 
 		helper.setSubject(subject);
