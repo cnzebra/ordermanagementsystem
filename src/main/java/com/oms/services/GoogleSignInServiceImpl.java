@@ -3,10 +3,10 @@ package com.oms.services;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,8 @@ import com.oms.pojo.User;
 
 @Service
 public class GoogleSignInServiceImpl implements GoogleSignInService {
+	
+	Logger log=Logger.getLogger(GoogleSignInServiceImpl.class);
 
 	@Value("${google.token.api}")
 	private String tokenAPI;
@@ -35,12 +37,12 @@ public class GoogleSignInServiceImpl implements GoogleSignInService {
 	public User user;
 
 	public void testProperties() {
-		System.out.println("Calling the testproperties method");
-		System.out.println("google token api::" + tokenAPI);
-		System.out.println("google user profile  api::" + userProfileAPI);
-		System.out.println("client id and and client secreat key::" + clientId);
-		System.out.println("client secreat key::" + clientSecreatKey);
-		System.out.println("google redirect uri::" + googleRedirectURI);
+		log.info("Calling the testproperties method");
+		log.info("google token api::" + tokenAPI);
+		log.info("google user profile  api::" + userProfileAPI);
+		log.info("client id and and client secreat key::" + clientId);
+		log.info("client secreat key::" + clientSecreatKey);
+		log.info("google redirect uri::" + googleRedirectURI);
 	}
 
 	@Override
@@ -59,30 +61,28 @@ public class GoogleSignInServiceImpl implements GoogleSignInService {
 		int httpStatus = 0;
 		try {
 			httpStatus = client.executeMethod(post);
+			log.info(httpStatus);
 			httpResponse = post.getResponseBodyAsString();
-			JSONObject access_token = new JSONObject(httpResponse);
-		} catch (HttpException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		return httpResponse;
 	}
 
 	@Override
 	public User callUserInfoAPI(String httpResponse) {
-		JSONObject access_token = new JSONObject(httpResponse);
-		JSONObject user = null;
+		JSONObject accesstoken = new JSONObject(httpResponse);
+		JSONObject user1 = null;
 		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(userProfileAPI + "?access_token=" + access_token.getString("access_token"));
+		GetMethod get = new GetMethod(userProfileAPI + "?access_token=" + accesstoken.getString("access_token"));
 		User data = null;
 		try {
 			client.executeMethod(get);
-			user = new JSONObject(get.getResponseBodyAsString());
-			data = (User) new Gson().fromJson(user.toString(), User.class);
+			user1 = new JSONObject(get.getResponseBodyAsString());
+			data = (User) new Gson().fromJson(user1.toString(), User.class);
 			this.user = data;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		return data;
 	}

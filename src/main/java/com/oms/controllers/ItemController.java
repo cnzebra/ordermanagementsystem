@@ -2,6 +2,7 @@ package com.oms.controllers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ import com.oms.services.ItemService;
 @RestController
 @RequestMapping(value = "/item")
 public class ItemController {
+	
+	Logger log=Logger.getLogger(ItemController.class);
 
 	@Autowired
 	ItemService itemService;
@@ -29,29 +32,28 @@ public class ItemController {
 	public ResponseEntity<List<Item>> listAllItems() {
 		List<Item> items = itemService.findAllItems();
 		if (items.isEmpty()) {
-			return new ResponseEntity<List<Item>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
+		return new ResponseEntity<>(items, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Item getItem(@PathVariable("id") Integer id) {
-		Item item = itemService.findItemById(id);
-		return item;
+		return itemService.findItemById(id);
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Void> createItem(@RequestBody Item item, UriComponentsBuilder ucBuilder) {
 		if (itemService.isItemExist(item.getItemId())) {
-			System.out.println("A Item with id " + item.getItemId() + " already exist");
-			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			log.info("A Item with id " + item.getItemId() + " already exist");
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		itemService.saveItem(item);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/item/{id}").buildAndExpand(item.getItemId()).toUri());
-		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
@@ -63,11 +65,11 @@ public class ItemController {
 	public ResponseEntity<Item> deleteItem(@PathVariable("id") Integer id) {
 		Item items = itemService.findItemById(id);
 		if (items == null) {
-			System.out.println("Unable to delete item with id " + id + " not found");
-			return new ResponseEntity<Item>(HttpStatus.NOT_FOUND);
+			log.info("Unable to delete item with id " + id + " not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		itemService.deleteItemById(id);
-		return new ResponseEntity<Item>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@RequestMapping(value = "/isExist/{id}", method = RequestMethod.GET)
@@ -75,9 +77,9 @@ public class ItemController {
 	public ResponseEntity<Item> isItemExist(@PathVariable("id") Integer id) {
 		Item item = itemService.findItemById(id);
 		if (item == null) {
-			return new ResponseEntity<Item>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Item>(item, HttpStatus.FOUND);
+		return new ResponseEntity<>(item, HttpStatus.FOUND);
 	}
 
 	@RequestMapping(value = "/isModify/{id}/{quantity}", method = RequestMethod.PUT)
@@ -89,7 +91,7 @@ public class ItemController {
 		Integer modifiedQuantity = invenQuantity - quantity;
 		item.setQuantity(modifiedQuantity);
 		itemService.itemModification(item);
-		return new ResponseEntity<Item>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
