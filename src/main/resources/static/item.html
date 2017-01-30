@@ -137,7 +137,7 @@ h3 {
 		app.controller('itemController', function($scope, $http,$window) {
 			$scope.items = {};
 			$scope.selectedItems = [];
-			$http.get("http://192.168.1.164:8080/item/itemList").then(
+			$http.get("http://localhost:8080/item/itemList").then(
 					function(response) {
 						$scope.items = response.data;
 					});

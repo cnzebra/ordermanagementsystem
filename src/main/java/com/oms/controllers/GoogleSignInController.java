@@ -28,13 +28,13 @@ public class GoogleSignInController {
 	@GetMapping
 	@RequestMapping("/OAuth2Callback")
 	public String callback(@RequestParam String code) {
-		String tokenResponse = "";
-		User user = null;
+		String tokenResponse;
+		User user1;
 		if (StringUtils.isNotBlank(code)) {
 			signService.testProperties();
 			tokenResponse = signService.callTokenAPI(code);
-			user = signService.callUserInfoAPI(tokenResponse);
-			this.user = user;
+			user1 = signService.callUserInfoAPI(tokenResponse);
+			this.user = user1;
 			return "redirect:home.html";
 		}
 		return "redirecting code value is not authenticated";

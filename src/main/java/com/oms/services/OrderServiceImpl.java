@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oms.pojo.Order;
-import com.oms.repositories.ItemRepository;
 import com.oms.repositories.OrderRepository;
 
 @Service
@@ -34,8 +33,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order fetchOrderById(Integer orderId) {
-		Order orderById = orderRepository.findOne(orderId);
-		return orderById;
+		return orderRepository.findOne(orderId);
 	}
 
 	@Override

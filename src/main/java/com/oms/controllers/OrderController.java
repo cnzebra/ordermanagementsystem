@@ -2,6 +2,7 @@ package com.oms.controllers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import com.oms.services.OrderService;
 @RestController
 @RequestMapping(value = "/order")
 public class OrderController {
+	
+	Logger log=Logger.getLogger(OrderController.class);
 
 	@Autowired
 	OrderService orderService;
@@ -37,8 +40,7 @@ public class OrderController {
 	@RequestMapping(value = "/fetch", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Order> getOrders() {
-		List<Order> order = orderService.fetchOrders();
-		return order;
+		return orderService.fetchOrders();
 	}
 
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -49,8 +51,7 @@ public class OrderController {
 
 	@RequestMapping(value = "/getOrder/{orderId}", method = RequestMethod.GET)
 	public Order getOrderById(@PathVariable("orderId") Integer orderId) {
-		Order order = orderService.fetchOrderById(orderId);
-		return order;
+		return orderService.fetchOrderById(orderId);
 	}
 
 	@RequestMapping(value = "/update/{orderId}", method = RequestMethod.PUT)
@@ -70,7 +71,7 @@ public class OrderController {
 					"Thank You for Placing order,you Order details are as follows" + "orderId= " + order.getOrderId()
 							+ " " + "orderAmount=" + order.getOrderAmount());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
