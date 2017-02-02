@@ -16,8 +16,8 @@ import com.oms.pojo.User;
 
 @Service
 public class GoogleSignInServiceImpl implements GoogleSignInService {
-	
-	Logger log=Logger.getLogger(GoogleSignInServiceImpl.class);
+
+	Logger log = Logger.getLogger(GoogleSignInServiceImpl.class);
 
 	@Value("${google.token.api}")
 	private String tokenAPI;

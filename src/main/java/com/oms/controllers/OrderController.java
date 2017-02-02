@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.oms.pojo.User;
 import com.oms.services.GoogleSignInServiceImpl;
 import com.oms.services.OrderService;
 
+@RefreshScope
 @RestController
 @RequestMapping(value = "/order")
 public class OrderController {

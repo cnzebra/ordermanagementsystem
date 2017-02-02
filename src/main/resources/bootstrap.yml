@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: development
+    
+---
+
+spring:
+  profiles: development
+  cloud:
+    config:
+      name: ordermanagementsystem
+      uri: http://localhost:8889
+      failFast: false
+      enabled: true
+      
+      
+      
+    
